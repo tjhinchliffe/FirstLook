@@ -1,0 +1,19 @@
+name: Upload verified First Look packages
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  upload:
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate package archives and add Mac preview release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIRSTLOOK_PACKAGE_MANIFEST: ${{ secrets.FIRSTLOOK_PACKAGE_MANIFEST }}
+        run: python3 scripts/upload-verified-packages.py
